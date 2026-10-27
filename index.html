@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e3e8e1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Bassballs">
+<meta name="description" content="Bassballs Synth Pocket — a touch-friendly, locally generated Web Audio bass synthesizer from Pasta Labs.">
+<title>Pasta Labs — Bassballs Synth Pocket Edition</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0f12;--panel:#141a1e;--panel2:#1a2227;--edge:#2a353a;--ink:#f3f3ec;--muted:#89979b;--lime:#d3f58d;--lilac:#c6a8fa;--aqua:#66cfce;--orange:#ffc08d;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-synthesis:none}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{background:radial-gradient(ellipse 85% 35% at 50% -15%,#203436 0%,transparent 75%),var(--bg);color:var(--ink);margin:0;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.shell{max-width:1290px;margin:auto;padding:28px 32px 36px}.top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:23px}.brand{display:flex;align-items:center;gap:15px}.mark{height:47px;width:47px;display:grid;place-items:center;background:var(--lime);border-radius:12px;color:#10170f;font-weight:1000;letter-spacing:-.14em;padding-right:5px;font-size:22px;transform:rotate(-3deg)}.eyebrow{font:700 10px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;color:var(--lime);text-transform:uppercase}.brand h1{margin:0;font-size:clamp(22px,3vw,34px);line-height:1.08;letter-spacing:-.06em;font-weight:830}.brand small{color:#9aa7aa;font-size:12px;line-height:1.7}.rightnav{display:flex;align-items:center;gap:12px}.status{display:flex;align-items:center;gap:8px;color:#a3afb1;font:11px ui-monospace,monospace;white-space:nowrap}.dot{width:7px;height:7px;background:#7d8082;border-radius:50%;box-shadow:0 0 0 3px #293035}.dot.on{background:var(--lime);box-shadow:0 0 0 3px #35462d,0 0 14px #d3f58d80}.primary{border:1px solid var(--lime);border-radius:11px;background:var(--lime);color:#152015;letter-spacing:.01em;font-weight:760;font-size:13px;padding:13px 18px;transition:.16s ease}.primary:hover{background:#edffb5}.primary.on{background:transparent;color:var(--lime)}
+.flowline{background:#13191c;border:1px solid var(--edge);border-radius:13px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:11px 20px;margin-bottom:17px;color:#a0afb2}.flowline span{font:700 10px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}.flowline b{font-size:16px;font-weight:400;color:#6b777b}.flowline span.active{color:var(--lime)}
+.main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:17px}.stack{display:flex;flex-direction:column;gap:17px}.panel{background:linear-gradient(145deg,#171f22,#11171a);border:1px solid var(--edge);border-radius:17px;padding:21px;position:relative;overflow:hidden}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:21px}.panel-title h2{margin:0;font-size:15px;letter-spacing:-.025em;font-weight:770}.number{font:700 10px ui-monospace,monospace;letter-spacing:.09em;color:#7d8e92}.subheading{font:650 10px/1.35 ui-monospace,Menlo,monospace;letter-spacing:.13em;color:var(--muted);text-transform:uppercase}.hint{font-size:11px;color:var(--muted);line-height:1.55}.wavebuttons{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:19px}.wavebutton{border:1px solid #303b40;border-radius:11px;color:#acb8b9;background:#11171b;padding:9px 4px 7px;display:grid;place-items:center;gap:4px;font:680 11px/1 ui-monospace,monospace;transition:.16s}.wavebutton svg{height:37px;width:90%;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linejoin:round}.wavebutton.selected{background:#27351f;border-color:#a6cd75;color:var(--lime)}.wavebutton:hover{border-color:#8c9e91}
+.mini-row{display:flex;align-items:center;justify-content:space-between;gap:14px}.octave{display:flex;align-items:center;gap:9px}.octave button{border-radius:8px;background:#273237;border:1px solid #3b484c;color:var(--ink);width:29px;height:29px}.octave strong{font:700 13px ui-monospace,monospace;min-width:44px;text-align:center}.toggleline{display:flex;align-items:center;gap:9px;color:#aeb9ba;font-size:12px;cursor:pointer}.toggleline input{appearance:none;width:35px;height:20px;position:relative;background:#334044;border:1px solid #526065;border-radius:14px;margin:0;cursor:pointer}.toggleline input:before{content:"";position:absolute;left:3px;top:3px;width:12px;height:12px;border-radius:50%;background:#a1b2b5;transition:.18s}.toggleline input:checked{background:#364a2c;border-color:#8fb968}.toggleline input:checked:before{transform:translateX(15px);background:var(--lime)}
+.controls{display:grid;grid-template-columns:1fr 1fr;column-gap:23px;row-gap:19px}.control{min-width:0}.control .names{display:flex;justify-content:space-between;align-items:center;gap:5px;margin-bottom:10px}.control label{font-size:11px;color:#c5ced0;font-weight:560}.value{font:700 11px/1 ui-monospace,monospace;color:var(--lime);white-space:nowrap}.control.purple .value{color:var(--lilac)}.control.orange .value{color:var(--orange)}input[type=range]{appearance:none;display:block;width:100%;height:5px;border-radius:4px;background:#354247;cursor:pointer;margin:0;accent-color:var(--lime)}input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;background:var(--lime);border:3px solid #18231c;border-radius:50%;box-shadow:0 0 0 1px #abc98a;cursor:grab}input[type=range]::-moz-range-thumb{width:10px;height:10px;background:var(--lime);border:3px solid #18231c;border-radius:50%;box-shadow:0 0 0 1px #abc98a;cursor:grab}.purple input[type=range]::-webkit-slider-thumb{background:var(--lilac);box-shadow:0 0 0 1px #b39ad8}.orange input[type=range]::-webkit-slider-thumb{background:var(--orange);box-shadow:0 0 0 1px #e1a677}
+.separator{height:1px;background:var(--edge);margin:22px 0}.preset-area{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.preset{border:1px solid #38484a;color:#b4c0c0;border-radius:8px;background:#192327;padding:8px 11px;font:650 11px ui-monospace,monospace}.preset.active{background:#2c3922;border-color:#8cac68;color:var(--lime)}.preset:hover{border-color:#9dc28a}.big-display{background:linear-gradient(145deg,#0d1518,#101a1d);border:1px solid #304248;border-radius:14px;padding:13px 15px 10px;margin-bottom:17px}.disptop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}.live{font:650 10px ui-monospace,monospace;color:var(--aqua);display:flex;align-items:center;gap:7px}.live i{display:block;width:6px;height:6px;background:var(--aqua);border-radius:50%}#spectrum{display:block;width:100%;height:188px}.legend{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font:10px ui-monospace,monospace}.legend div{display:flex;align-items:center;gap:6px}.swatch{display:inline-block;width:9px;height:3px;border-radius:3px;background:var(--lime)}.swatch.purple{background:var(--lilac)}.readouts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.readout{background:#202b2f;border-radius:9px;padding:11px 10px}.readout small{display:block;font:600 9px ui-monospace,monospace;letter-spacing:.07em;color:#9eadae;margin-bottom:8px}.readout strong{font:680 15px ui-monospace,monospace;color:#e7efeb}.readout:nth-child(2) strong{color:var(--lilac)}.readout:nth-child(3) strong{color:var(--aqua)}.meter{height:5px;background:#344448;border-radius:10px;margin-top:9px;overflow:hidden}.meter span{display:block;height:100%;width:0;background:var(--aqua);border-radius:10px;transition:width .07s linear}
+.fuzz-row{background:#20292d;border:1px solid #374347;border-radius:10px;padding:12px;margin:17px 0 0;display:flex;align-items:center;justify-content:space-between;gap:10px}.fuzz-row small{display:block;color:var(--muted);margin-top:4px;font-size:10px}
+.keyboardpanel{margin-top:17px;padding:19px 21px 19px}.key-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.key-header h2{margin:0;font-size:15px}.key-header span{font:11px ui-monospace,monospace;color:#91a0a3}.piano-container{width:100%;background:#0a0e10;border-radius:11px;padding:10px 11px 11px;border:1px solid #2b383d}.piano{position:relative;height:144px;min-width:0;touch-action:none;user-select:none;-webkit-user-select:none}.piano-key{position:absolute;bottom:0;padding:0;border-radius:0 0 7px 7px;display:flex;align-items:flex-end;justify-content:center;outline-offset:-2px;transition:background .055s,border-color .055s}.piano-key.white{height:100%;background:linear-gradient(#e9f0e9,#cbd5cf);border:1px solid #99a6a0;border-right-color:#9fa6a0;box-shadow:inset 0 -8px 10px #9fa9a040;color:#52615f;z-index:1}.piano-key.white:hover{background:#f5f9e2}.piano-key.white.pressed{background:var(--lime);box-shadow:inset 0 -8px 14px #4e67282e}.piano-key.black{height:61%;background:linear-gradient(#30373a,#0f1518);border:1px solid #546266;border-bottom:5px solid #080c0f;box-shadow:1px 3px 6px #060909aa;color:#becac6;z-index:2}.piano-key.black:hover{background:#3f4c47}.piano-key.black.pressed{background:#8da657;border-bottom-color:#6f8345;color:white}.piano-key span{pointer-events:none;font:700 11px ui-monospace,monospace;letter-spacing:.03em;margin-bottom:14px}.piano-key.black span{font-size:10px;margin-bottom:11px}.piano-key em{position:absolute;top:13px;color:#788681;font:600 9px ui-monospace,monospace;font-style:normal}.piano-key.white.pressed em{color:#374729}.key-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#839298;font-size:11px;margin-top:11px}.key-footer strong{font-weight:600;color:#d6e1dc}.note{font-size:11px;color:#8d9fa2;margin-top:17px;line-height:1.65;border-left:2px solid #637b67;padding-left:12px}.foot{margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:15px;color:#7f8d91;font:10px/1.5 ui-monospace,monospace}.foot a{color:#b4cfc3}.divider-v{height:14px;width:1px;background:#4a5659;display:inline-block}
+/* Dedicated sampler color stage: stable AU-friendly widget layout. */
+.sp-panel{border-color:#534a40;background:linear-gradient(145deg,#24201e,#15191a)}
+.sp-panel .panel-title{margin-bottom:15px}
+.sp-flag{font:700 10px ui-monospace,Menlo,monospace;color:var(--orange);letter-spacing:.06em}
+.sp-switch{margin:0 0 18px;background:#2d2926;border-color:#51463e}
+.sp-meta{background:#262728;border:1px solid #45423c;border-radius:10px;padding:11px 12px;font:11px/1.65 ui-monospace,Menlo,monospace;color:#d7c4ad;margin-bottom:15px}
+.sp-meta strong{color:var(--orange)}
+.sp-routes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:10px 0 17px}
+.sp-route{padding:11px 2px 10px;min-width:0;border-radius:9px;color:#c4b8ab;background:#202427;border:1px solid #514940;font:700 11px ui-monospace,Menlo,monospace;transition:background .12s,border-color .12s}
+.sp-route small{display:block;font:550 9px ui-monospace,Menlo,monospace;color:#948e88;margin-top:6px}
+.sp-route.selected{border-color:#ffc08d;background:#47372a;color:#ffd7ae}
+.sp-route.selected small{color:#e4b688}
+.sp-route:hover{border-color:#e0af7b}
+.sp-panel .control .value{color:var(--orange)}
+.sp-panel input[type=range]::-webkit-slider-thumb{background:var(--orange);box-shadow:0 0 0 1px #dca16e}
+.sp-panel input[type=range]::-moz-range-thumb{background:var(--orange)}
+.sp-meta .mono-number{color:#fff3dd}
+/* Recovery character selector retains the same compact AU-panel geometry as the rest of the synth. */
+.recovery-panel{background:#131e20;border:1px solid #354549;border-radius:12px;padding:13px 13px 11px;margin-bottom:19px}
+.recovery-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:11px}
+.recovery-head output{font:700 11px ui-monospace,Menlo,monospace;color:var(--aqua)}
+.mode-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.mode-button{border-radius:9px;border:1px solid #3b4b50;background:#1b292c;color:#aebec0;min-width:0;padding:11px 5px 9px;text-align:center;transition:background .16s,border-color .16s;color .16s}
+.mode-button strong{display:block;font:750 11px ui-monospace,Menlo,monospace;letter-spacing:.04em}
+.mode-button small{display:block;font:570 9px ui-monospace,Menlo,monospace;color:#8c9ea1;margin-top:6px}
+.mode-button.selected{border-color:#b0d784;background:#2b3b2a;color:var(--lime)}
+.mode-button.selected small{color:#c7dfa5}.mode-button:hover{border-color:#a1ba9a}
+.mode-description{min-height:29px;margin:11px 2px 0;font-size:11px;color:#adbbbc;line-height:1.5}
+@media(max-width:920px){.shell{padding:19px 18px 28px}.main{grid-template-columns:1fr}.rightnav{gap:10px}.flowline{gap:8px}}
+@media(max-width:550px){.shell{padding:13px 10px}.top{align-items:flex-start;flex-wrap:wrap}.rightnav{width:100%;justify-content:space-between}.flowline{padding:11px 5px;gap:7px}.flowline span{font-size:8px}.flowline b{font-size:12px}.panel{padding:17px 14px}.controls{column-gap:15px}.wavebuttons{gap:4px}.wavebutton{font-size:9px;padding:8px 2px}.wavebutton svg{height:27px}.readout strong{font-size:12px}.piano-container{padding:5px}.piano{height:116px}.piano-key span{font-size:9px}.piano-key.black span{font-size:8px}.brand h1{font-size:25px}.key-header{align-items:flex-start;flex-direction:column}.mode-button strong{font-size:10px}.mode-button small{font-size:8px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* BASSBALLS / LAB — hardware-minded visual system, v1.4.1 / SOFT GRAPHITE PALETTE */
+:root{color-scheme:light;--bg:#dce0dd;--panel:#f4f5f0;--panel2:#ebece8;--edge:#c4cbc7;--ink:#1b2425;--muted:#6c7572;--lime:#e8764e;--lilac:#8070c8;--aqua:#41add2;--orange:#df8d38;--selected-bg:#d5ddd6;--selected-edge:#8da195;--selected-ink:#273b34;--screen-bg:#d5ded6;--screen-edge:#a2b3a7;--low-curve:#b36638;--high-curve:#7560a9;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-synthesis:none}
+html{background:#dce0dd}body{background:#dce0dd;color:var(--ink);letter-spacing:-.01em}
+button{font-family:inherit}button:focus-visible,input:focus-visible{outline:2px solid #d95b31;outline-offset:3px}
+.shell{max-width:1360px;padding:28px 32px 20px;transition:max-width .25s}
+.top{margin-bottom:21px;padding-bottom:18px;border-bottom:1px solid #aeb7b3;align-items:center}
+.brand{gap:17px}.mark{width:62px;height:62px;background:#1d2425;border-radius:7px;padding:0;display:grid;place-items:center;transform:none;box-shadow:inset 0 0 0 1px #13191a}
+.mark svg{display:block;width:51px;height:51px}
+.eyebrow{color:#606f6c;letter-spacing:.14em;font:700 10px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;margin-bottom:4px}
+.brand h1{font-size:clamp(27px,3vw,40px);line-height:1;letter-spacing:-.077em;font-weight:760;text-transform:lowercase}
+.brand small{color:#56615e;font-size:11px;display:block;margin-top:7px;letter-spacing:.004em}
+.rightnav{gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.status{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;background:#e5e8e3;border:1px solid #b9c2bc;padding:10px 12px;border-radius:4px;color:#59635f}
+.dot{background:#999e9b;box-shadow:none}.dot.on{background:#439775;box-shadow:0 0 0 2px #d1e3d3}
+.primary{border:1px solid #1d2425;border-radius:4px;background:#1d2425;color:#f8f8f2;font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.035em;padding:14px 17px}.primary:hover{background:#353f3e;color:#fff}.primary.on{background:#e4ece4;color:#1c5549;border-color:#8ea59b}
+.utility{border:1px solid #aeb9b4;border-radius:4px;padding:11px 12px;background:#edf0eb;color:#26302f;font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em;text-transform:uppercase;min-height:41px}.utility:hover{border-color:#3f5551;background:#fff}.utility.active{background:var(--selected-bg);color:var(--selected-ink);border-color:var(--selected-edge)}
+.flowline{background:#e7eae5;border:1px solid #bfc7c1;border-radius:4px;justify-content:flex-start;gap:13px;padding:11px 18px;margin-bottom:13px;min-height:45px;color:#626e6a;position:relative}
+.flowline:before{content:'SIGNAL';background:var(--selected-bg);color:var(--selected-ink);border:1px solid var(--selected-edge);border-radius:2px;font:700 9px ui-monospace,Menlo,monospace;letter-spacing:.08em;padding:5px 7px;margin-right:2px}.flowline span{color:#5c6864;font:700 10px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.02em}.flowline span.active{color:#b4442a}.flowline b{font-size:12px;color:#8b9791}
+.main{gap:13px}.stack{gap:13px}
+.panel{background:#f7f8f4;border:1px solid #bfc7c0;border-radius:5px;padding:19px 20px 20px;box-shadow:0 2px 2px #8d9a9010;overflow:hidden}
+.panel:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:#e2e5df}
+.panel-title{margin-bottom:19px;padding-bottom:13px;border-bottom:1px solid #d5dbd4;align-items:baseline}.panel-title h2{font-size:17px;line-height:1.1;font-weight:720;letter-spacing:-.047em;text-transform:lowercase}.number{font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;color:#7a8680}
+.subheading{color:#65716b;font:700 9px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.095em}
+.hint{color:#748079;font-size:10px;line-height:1.6}
+.wavebuttons{gap:6px;margin-bottom:18px}.wavebutton{background:#e9ede8;border:1px solid #c1cbc5;border-radius:4px;color:#56635f;gap:5px;font:700 10px/1 ui-monospace,Menlo,monospace;padding:11px 4px 9px;min-height:74px}.wavebutton svg{height:29px;stroke-width:2}.wavebutton.selected{background:var(--selected-bg);color:var(--selected-ink);border-color:var(--selected-edge);box-shadow:inset 0 0 0 1px #c3d0c5}.wavebutton.selected svg{stroke:var(--low-curve)}.wavebutton:hover{border-color:#4f5d58}
+.octave button{border-radius:3px;background:#e5e9e4;border:1px solid #bdc7bf;color:#26312d;width:32px;height:32px;font-weight:700}.octave button:hover{background:#fff}.octave strong{color:#2a3432}.toggleline{color:#41514a;gap:8px;font-size:11px;font-weight:600}.toggleline input{background:#d0d6d0;border-color:#a0ada4;width:37px;height:21px;border-radius:12px}.toggleline input:before{background:#f7faf4;width:13px;height:13px;box-shadow:0 1px 2px #69716b70}.toggleline input:checked{background:#9eb6a5;border-color:#6f907c}.toggleline input:checked:before{background:#f0b36e;transform:translateX(16px)}
+.controls{column-gap:22px;row-gap:19px}.control .names{margin-bottom:9px}.control label{color:#34433f;font-size:11px;font-weight:600}.value{color:#b34c31;font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.control.purple .value{color:#6757a7}.control.orange .value{color:#ba6a22}
+input[type=range]{background:#c3cec6;height:4px;border-radius:1px}input[type=range]::-webkit-slider-thumb{width:15px;height:15px;background:#f7f8f3;border:3px solid #283532;border-radius:50%;box-shadow:none}input[type=range]::-moz-range-thumb{width:10px;height:10px;background:#f7f8f3;border:3px solid #283532;border-radius:50%;box-shadow:none}
+.purple input[type=range]::-webkit-slider-thumb{background:#f7f8f3;border-color:#7765b9;box-shadow:none}.orange input[type=range]::-webkit-slider-thumb{background:#f7f8f3;border-color:#c17835;box-shadow:none}
+.preset-area{gap:5px;margin-bottom:15px}.preset{background:#e7ebe5;color:#59655e;border:1px solid #c4cdc5;border-radius:3px;padding:8px 9px;font:700 9px ui-monospace,Menlo,monospace;letter-spacing:.005em}.preset.active{background:var(--selected-bg);border-color:var(--selected-edge);color:#8a4d2e}.preset:hover{border-color:#566a60}
+.big-display{background:var(--screen-bg);border:1px solid var(--screen-edge);border-radius:4px;margin-bottom:15px;padding:15px 16px 13px;box-shadow:inset 0 0 0 3px #e2e8e1}.big-display .subheading{color:#4b6056}.live{color:#316c70}.live i{background:#316c70}#spectrum{height:178px}.legend{color:#4e6359}.swatch{background:var(--low-curve)}.swatch.purple{background:var(--high-curve)}.readouts{gap:6px}.readout{background:#e8eee7;border:1px solid #becbbf;border-radius:2px;padding:11px}.readout small{color:#607467}.readout strong{color:#283e34}.readout:nth-child(2) strong{color:#68549b}.readout:nth-child(3) strong{color:#386e73}.meter{background:#c5d4ca}.meter span{background:#539596}
+.recovery-panel{background:#ecefe9;border:1px solid #d0d8d0;border-radius:4px;padding:11px 12px;margin-bottom:17px}.recovery-head output{color:#425956}.mode-buttons{gap:5px}.mode-button{background:#e3e8e1;border:1px solid #c5cec5;border-radius:3px;color:#5e6a62;padding:10px 5px}.mode-button strong{font-size:10px}.mode-button small{font-size:8px;color:#7a8880}.mode-button.selected{background:var(--selected-bg);color:var(--selected-ink);border-color:var(--selected-edge)}.mode-button.selected small{color:#93532e}.mode-button:hover{border-color:#566c61}.mode-description{color:#5e6c63;font-size:10px;min-height:0;margin-top:10px}
+.fuzz-row{background:#e7ebe6;border:1px solid #cbd3cd;border-radius:4px;padding:13px;margin-top:16px}.fuzz-row strong{color:#26312c}.fuzz-row small{color:#758078}
+.sp-panel:before{background:#e9b279}.sp-flag{color:#c17835}.sp-switch{background:#f2ebe1;border-color:#d8cab6}.sp-meta{background:#dbe3da;border-color:#b4c3b6;border-radius:3px;padding:11px 12px;color:#42554a;font-size:10px}.sp-meta strong{color:#90522b}.sp-routes{gap:5px}.sp-route{background:#eaece5;border-color:#c6ccc0;color:#58635a;border-radius:3px;padding:11px 2px}.sp-route small{color:#899389}.sp-route.selected{background:var(--selected-bg);border-color:var(--selected-edge);color:var(--selected-ink)}.sp-route.selected small{color:#91512f}.sp-route:hover{border-color:#a97642}.sp-panel .control .value{color:#ad672c}.sp-panel input[type=range]::-webkit-slider-thumb{background:#faf8f0;box-shadow:none;border-color:#aa7237}.sp-panel input[type=range]::-moz-range-thumb{background:#faf8f0;border-color:#aa7237}
+.keyboardpanel{margin-top:13px;padding:17px 20px 16px}.key-header{align-items:center;margin-bottom:14px}.key-header h2{font-size:17px;letter-spacing:-.04em;text-transform:lowercase}.key-header span{color:#64726b;font-size:10px}.piano-container{border-radius:3px;background:#cad1ca;border:1px solid #c4cec3;padding:8px}.piano{height:128px}.piano-key.white{background:linear-gradient(#fff,#e6eae3);color:#697770;border:1px solid #b6c0b5;border-bottom:5px solid #aebaae;border-radius:1px 1px 4px 4px;box-shadow:none}.piano-key.white.pressed{background:#f3c69d;border-bottom-color:#bf8f68;box-shadow:none}.piano-key.black{background:#252f2d;color:#dae1da;border:1px solid #1e2825;border-bottom:5px solid #121916;border-radius:1px 1px 4px 4px;box-shadow:none}.piano-key.black.pressed{background:#dc875b;border-bottom-color:#9c5b3b}.piano-key.black:hover{background:#43554c}.piano-key.white:hover{background:#f5f6f0}.piano-key em{color:#8f9d91}.key-footer{color:#617067;font-size:10px}.key-footer strong{color:#364941}
+.note{border-left:2px solid #a9b5ac;color:#6d7871;font-size:10px;margin-top:14px;padding-left:10px}
+.foot{font:700 9px ui-monospace,Menlo,monospace;letter-spacing:.045em;color:#6d7971;margin-top:16px}
+.plugin-strip{border:1px solid #bdc9c0;background:#edf0e9;border-radius:4px;display:flex;justify-content:space-between;gap:12px;padding:10px 14px;margin-bottom:13px;align-items:center;flex-wrap:wrap}
+.plugin-strip .label{font:700 9px ui-monospace,Menlo,monospace;color:#6b7871;letter-spacing:.075em}.plugin-strip .value-read{font:700 10px ui-monospace,Menlo,monospace;color:#293833}.plugin-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.plugin-actions button{font:700 9px ui-monospace,Menlo,monospace;border:1px solid #b6c2b8;background:#f6f7f2;color:#3e5148;border-radius:3px;padding:7px 10px}.plugin-actions button:hover{background:#fff;border-color:#566d5c}
+.key-toggle{background:transparent;border:1px solid #bac3bc;border-radius:3px;font:700 10px ui-monospace,Menlo,monospace;color:#59685f;padding:6px 9px;white-space:nowrap}.key-toggle:hover{border-color:#40554b;background:#fff}
+.keyboardpanel[hidden]{display:none!important}.compact .panel{padding-top:15px;padding-bottom:15px}.compact .panel-title{margin-bottom:14px;padding-bottom:10px}.compact .stack{gap:9px}.compact .main{gap:9px}.compact .big-display #spectrum{height:145px}.compact .controls{row-gap:15px}.compact .keyboardpanel{display:none}.compact .flowline{margin-bottom:9px}.compact .keyboard-note{display:none}
+.footer-brand{letter-spacing:.1em}.section-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#cf8452;margin-right:6px}
+@media(max-width:1050px){.flowline{gap:8px}.flowline span{font-size:9px}.rightnav{max-width:52%}}
+@media(max-width:920px){.shell{padding:19px 18px}.main{grid-template-columns:1fr}.rightnav{max-width:none}.flowline{flex-wrap:wrap}}
+@media(max-width:580px){.shell{padding:14px 10px}.top{gap:14px;align-items:flex-start}.mark{width:52px;height:52px}.mark svg{width:45px;height:45px}.brand{gap:11px}.brand h1{font-size:29px}.brand small{max-width:300px}.rightnav{width:100%;justify-content:flex-start}.rightnav .primary{margin-left:auto}.flowline:before{display:none}.flowline{gap:6px;padding:9px}.flowline span{font-size:8px}.flowline b{font-size:10px}.panel{padding:16px 13px}.controls{column-gap:16px}.wavebutton{min-height:65px;font-size:9px}.wavebutton svg{height:24px}.readouts strong{font-size:12px}.key-header{flex-wrap:wrap}.plugin-strip{padding:9px}.plugin-strip .value-read{font-size:9px}.sp-routes{gap:3px}.mode-button strong{font-size:9px}}
+
+
+
+/* Pasta Labs Pocket edition — adaptive iPhone/Android layout */
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+button{touch-action:manipulation}
+.mobile-nav{display:none}
+.vcf-pocket-block{margin:18px 0 0;background:#e5eae3;border:1px solid #c4cec2;border-radius:5px;padding:14px}
+.vcf-source-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:12px 0 16px}
+.vcf-source{min-height:57px;border:1px solid #bbc9bc;color:#34443d;background:#eff3ec;border-radius:4px;font:750 12px ui-monospace,Menlo,monospace}
+.vcf-source small{display:block;color:#748379;font:650 9px ui-monospace,Menlo,monospace;margin-top:5px}
+.vcf-source.active{border-color:#739980;background:#c8d9c9;color:#1a452f}
+.vcf-source.active small{color:#3e7250}
+.vcf-pocket-block .control{min-width:0}
+.vcf-pocket-block .hint{margin:10px 0 0}
+.keyboardpanel{z-index:20}
+.dock-controls{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.dock-brand{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.dock-brand strong{font-size:15px;font-weight:850;letter-spacing:-.055em}
+.dock-brand>span{font:700 9px ui-monospace,monospace;color:#68786e}
+.dock-live-indicator{display:inline-block;width:7px;height:7px;border-radius:50%;background:#a1a9a3;vertical-align:middle;margin-left:9px}
+.dock-live-indicator.on{background:#288359;box-shadow:0 0 0 3px #c5dec9}
+.dock-octave{display:flex;align-items:center;gap:3px;background:#eef1ea;border:1px solid #bfc9bf;padding:3px;border-radius:4px}
+.dock-octave button,.dock-octave output{display:grid;place-items:center;width:34px;height:34px;font-size:20px;font-weight:700;color:#253a32}
+.dock-octave button{border:0;border-radius:3px;background:#d8e1d8}
+.dock-octave output{font:760 12px ui-monospace,monospace;width:38px}
+.dock-start{border:1px solid #1d2a22;background:#1d2a22;color:#f2f5ef;border-radius:4px;padding:0 12px;height:41px;font:780 10px ui-monospace,monospace;white-space:nowrap}
+.dock-start.on{background:#dceadc;color:#24543b;border-color:#96b59c}
+.dock-footer{display:flex;justify-content:space-between;gap:10px;color:#607268;font:700 9px ui-monospace,monospace;margin-top:8px}
+.piano{touch-action:none;overscroll-behavior:contain;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.piano-key{touch-action:none;-webkit-touch-callout:none}
+.piano-key span{display:none}
+.piano-key em{font:700 10px ui-monospace,monospace}
+@media(max-width:700px){
+ html,body{max-width:100%;overflow-x:hidden}
+ body{padding-bottom:calc(230px + env(safe-area-inset-bottom,0px))}
+ .shell{padding:12px 12px 0;max-width:620px}
+ .top{padding:0 0 12px;margin:0 0 10px;gap:9px;flex-wrap:wrap;align-items:center}
+ .brand{gap:9px;min-width:0;flex:1}
+ .brand .mark{width:40px;height:40px;min-width:40px}
+ .brand .mark svg{width:34px;height:34px}
+ .brand h1{font-size:24px;letter-spacing:-.075em}
+ .brand small{font-size:9px;margin-top:4px}
+ .eyebrow{font-size:8px}
+ .rightnav{width:auto;gap:5px;flex:0;justify-content:flex-end}
+ .rightnav .status,.rightnav #layoutToggle{display:none}
+ .rightnav #startButton{font:750 10px ui-monospace,monospace;padding:10px 9px;min-height:39px;white-space:nowrap}
+ .flowline{display:none}
+ .plugin-strip{margin:0 0 9px;border-radius:4px;min-height:0;padding:8px 10px}
+ .plugin-strip .label{font-size:8px}
+ .plugin-strip #engineBadge,.plugin-strip #midiButton{display:none}
+ .plugin-actions{gap:5px;flex-wrap:wrap}
+ .plugin-actions button{font-size:9px;min-height:30px;padding:6px 7px}
+ .mobile-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:sticky;top:0;z-index:11;background:#dce0dd;padding:5px 0 8px;gap:5px;border-bottom:1px solid #c0c9c0;margin-bottom:11px}
+ .mobile-tab{border:1px solid #bfc9bd;background:#ecf0e9;border-radius:4px;min-width:0;height:49px;color:#54635a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;font:800 11px ui-monospace,monospace}
+ .mobile-tab span{font:600 8px ui-monospace,monospace;letter-spacing:0;color:#8a958c}
+ .mobile-tab.active{color:#233c30;background:#c8dcc9;border-color:#86a590}
+ .mobile-tab.active span{color:#4f7d5d}
+ .main{display:block}
+ .stack{display:block}
+ .panel{padding:16px 14px 18px;margin-bottom:12px;scroll-margin-top:78px;min-height:0}
+ .panel.mobile-hidden{display:none!important}
+ .panel-title{margin-bottom:15px;padding-bottom:11px}
+ .panel-title h2{font-size:21px}
+ .panel-title .number{font-size:8px}
+ .wavebuttons{gap:5px}
+ .wavebutton{min-height:68px;padding:9px 1px 7px;font-size:9px}
+ .wavebutton svg{height:29px}
+ .controls{row-gap:19px;column-gap:14px}
+ .control input[type=range]{width:100%}
+ .readouts{gap:5px}
+ .readout{padding:9px 5px}
+ .readout strong{font-size:12px}
+ #spectrum{height:145px}
+ .sp-routes{gap:4px}
+ .sp-route{font-size:10px}
+ .mode-button{min-height:56px}
+ .preset-area{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .preset{font-size:9px;padding:9px 5px}
+ .keyboardpanel{position:fixed;bottom:0;left:0;right:0;margin:0;background:#e3e9e2;border-top:2px solid #9eafa0;border-right:0;border-left:0;border-bottom:0;border-radius:12px 12px 0 0;box-shadow:0 -9px 30px #273c2d2c;padding:11px 10px calc(9px + env(safe-area-inset-bottom,0px));max-height:none}
+ .keyboardpanel:before{display:none}
+ .dock-controls{margin-bottom:8px}
+ .dock-brand strong{font-size:16px}
+ .piano-container{padding:3px;background:#bacbbb;border-color:#a4b4a5}
+ .piano{height:112px;max-height:30dvh}
+ .piano-key.white{border-bottom-width:5px;border-radius:2px 2px 4px 4px}
+ .piano-key.black{height:61%;border-bottom-width:5px;z-index:3}
+ .piano-key span{display:none}
+ .piano-key em{position:absolute;top:auto;bottom:8px;font-size:10px;left:0;right:0;text-align:center}
+ .dock-footer{margin-top:7px}
+ .foot{padding:8px 0 30px;font-size:8px}
+}
+@media(max-width:380px){
+ .brand h1{font-size:21px}.brand small{font-size:8px}
+ .dock-octave button{width:28px;height:31px}.dock-octave output{width:33px}
+ .dock-start{padding:0 8px}
+ .piano{height:106px}
+}
+@media(max-width:700px) and (orientation:landscape){
+ body{padding-bottom:calc(147px + env(safe-area-inset-bottom,0px))}
+ .keyboardpanel{padding:7px 12px calc(5px + env(safe-area-inset-bottom,0px))}
+ .dock-controls{margin-bottom:4px}.dock-brand>span{display:none}
+ .dock-octave button,.dock-octave output{height:25px}
+ .dock-start{height:29px}
+ .piano{height:66px}
+ .dock-footer{display:none}
+}
+@media(min-width:701px){
+ .keyboardpanel{margin-top:13px;padding:15px 18px}
+ .piano{height:160px}
+ .piano-key em{bottom:15px;top:auto}
+}
+
+@media(max-width:700px){.compact .keyboardpanel{display:block!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="brand"><div class="mark" aria-label="Bassballs Synth original twin-filter mark"><svg viewBox="0 0 54 54" role="img" aria-hidden="true"><path d="M12 9 V44 M30 9 V44" stroke="#f5f4e9" stroke-width="3.4" stroke-linecap="square"/><circle cx="20" cy="31" r="9.2" stroke="#f5f4e9" stroke-width="3.2" fill="none"/><circle cx="38" cy="31" r="9.2" stroke="#f5f4e9" stroke-width="3.2" fill="none"/><circle cx="20" cy="31" r="3.1" fill="#efab70"/><circle cx="38" cy="31" r="3.1" fill="#9b9bee"/></svg></div><div><div class="eyebrow">PASTA LABS &nbsp; / &nbsp; POCKET INSTRUMENT</div><h1>Bassballs Synth</h1><small>WEB EDITION &nbsp; • &nbsp; TOUCH-READY SYNTH</small></div></div>
+    <div class="rightnav"><div class="status"><span class="dot" id="audioDot"></span><span id="audioStatus">AUDIO OFF</span></div><button type="button" class="utility" id="layoutToggle" aria-pressed="false" title="Show or hide keyboard on desktop">⌗ &nbsp;COMPACT</button><button class="primary" id="startButton">▶ &nbsp; START AUDIO</button></div>
+  </header>
+  <nav class="mobile-nav" aria-label="Synth control pages">
+    <button type="button" class="mobile-tab active" data-tab="osc" aria-pressed="true">OSC<span>sound</span></button>
+    <button type="button" class="mobile-tab" data-tab="env" aria-pressed="false">ADSR<span>shape</span></button>
+    <button type="button" class="mobile-tab" data-tab="vcf" aria-pressed="false">VCF<span>cutoff</span></button>
+    <button type="button" class="mobile-tab" data-tab="twin" aria-pressed="false">TWIN<span>filters</span></button>
+    <button type="button" class="mobile-tab" data-tab="sp" aria-pressed="false">COLOR<span>sampler</span></button>
+  </nav>
+  <div class="flowline" aria-label="signal path"><span>OSCILLATOR</span><b>→</b><span>AMP ENVELOPE</span><b>→</b><span>PRE-FILTER</span><b>→</b><span>FUZZ / SP COLOR</span><b>→</b><span class="active">DUAL ENVELOPE FILTER</span><b>→</b><span>OUTPUT</span></div>
+  <div class="plugin-strip" aria-label="Instrument utility strip"><div><span class="label">INSTRUMENT &nbsp; MIDI IN → MONO &nbsp; / &nbsp; AUDIO OUT → STEREO</span><span class="value-read" id="engineBadge" style="margin-left:13px">ENGINE READY / OFFLINE</span></div><div class="plugin-actions"><button type="button" id="midiButton" title="Connect an external MIDI keyboard where supported">MIDI CONNECT</button><button type="button" id="exportPatch" title="Export the current synth patch as a JSON file">SAVE PATCH ↧</button><button type="button" id="importPatch" title="Load a saved synth patch">LOAD PATCH ↥</button><input id="patchFile" type="file" accept=".json,application/json" style="display:none" aria-label="Select patch JSON file"></div></div>
+  <div class="main">
+    <div class="stack">
+      <section class="panel" data-tab-panel="osc" id="oscPanel">
+        <div class="panel-title"><h2>Oscillator</h2><span class="number">01 / SOUND SOURCE</span></div>
+        <div class="subheading" style="margin-bottom:11px">Waveform</div>
+        <div class="wavebuttons" id="waveButtons">
+          <button class="wavebutton" data-wave="sine" aria-pressed="false"><svg viewBox="0 0 60 32"><path d="M0 16 C7 -1 15 -1 22 16 S37 33 45 16 S55 -1 60 16"/></svg>SINE</button>
+          <button class="wavebutton" data-wave="triangle" aria-pressed="false"><svg viewBox="0 0 60 32"><path d="M0 30 L15 2 L30 30 L45 2 L60 30"/></svg>TRI</button>
+          <button class="wavebutton" data-wave="square" aria-pressed="false"><svg viewBox="0 0 60 32"><path d="M0 28 V4 H15 V28 H30 V4 H45 V28 H60"/></svg>SQUARE</button>
+          <button class="wavebutton selected" data-wave="sawtooth" aria-pressed="true"><svg viewBox="0 0 60 32"><path d="M0 30 L15 2 V30 L30 2 V30 L45 2 V30 L60 2"/></svg>SAW</button>
+          <button class="wavebutton" data-wave="pulse" aria-pressed="false"><svg viewBox="0 0 60 32"><path d="M0 28 V4 H10 V28 H30 V4 H40 V28 H60"/></svg>PULSE</button>
+        </div>
+        <div class="mini-row"><div><div class="subheading">Keyboard octave</div><div class="octave" style="margin-top:9px"><button id="octDown" aria-label="Lower octave">−</button><strong id="octDisplay">C2</strong><button id="octUp" aria-label="Raise octave">+</button></div></div><label class="toggleline"><input id="subOsc" type="checkbox"><span>−1 octave sub</span></label></div>
+      </section>
+      <section class="panel" data-tab-panel="env" id="envPanel">
+        <div class="panel-title"><h2>Amplitude envelope</h2><span class="number">02 / NOTE SHAPE</span></div>
+        <div class="controls">
+          <div class="control" data-control="attack"><div class="names"><label for="attack">Attack</label><span class="value"></span></div><input id="attack" type="range" min="1" max="600" step="1" value="5"></div>
+          <div class="control" data-control="decay"><div class="names"><label for="decay">Decay</label><span class="value"></span></div><input id="decay" type="range" min="20" max="1500" step="1" value="260"></div>
+          <div class="control" data-control="sustain"><div class="names"><label for="sustain">Sustain</label><span class="value"></span></div><input id="sustain" type="range" min="0" max="100" step="1" value="20"></div>
+          <div class="control" data-control="release"><div class="names"><label for="release">Release</label><span class="value"></span></div><input id="release" type="range" min="20" max="1400" step="1" value="180"></div>
+        </div>
+        <p class="hint" style="margin:18px 0 0">A short attack and falling level excite the envelope follower. For the most audible sweep, keep sustain low.</p>
+      </section>
+      <section class="panel" data-tab-panel="vcf" id="vcfPanel">
+        <div class="panel-title"><h2>Pre-filter</h2><span class="number">03 / SUBTRACTIVE STAGE</span></div>
+        <div class="controls">
+          <div class="control" data-control="preCutoff"><div class="names"><label for="preCutoff">Low-pass cutoff</label><span class="value"></span></div><input id="preCutoff" type="range" min="0" max="100" step="1" value="83"></div>
+          <div class="control" data-control="preQ"><div class="names"><label for="preQ">Resonance</label><span class="value"></span></div><input id="preQ" type="range" min="0.5" max="10" step="0.1" value="0.8"></div>
+        </div>
+        
+        <div class="vcf-pocket-block" aria-label="VCF envelope modulation">
+          <div class="subheading">CUTOFF MODULATION</div>
+          <div class="vcf-source-buttons" role="group" aria-label="VCF modulation source">
+            <button type="button" class="vcf-source active" data-vcf-source="0" aria-pressed="true">OFF<small>STATIC</small></button>
+            <button type="button" class="vcf-source" data-vcf-source="1" aria-pressed="false">ENV<small>AMP ADSR</small></button>
+            <button type="button" class="vcf-source" data-vcf-source="2" aria-pressed="false">FOLLOW<small>AUDIO</small></button>
+          </div>
+          <input type="hidden" id="vcfEnvSource" min="0" max="2" value="0">
+          <div class="control" data-control="vcfEnvAmount"><div class="names"><label for="vcfEnvAmount">Envelope amount</label><span class="value">50%</span></div><input id="vcfEnvAmount" type="range" min="0" max="100" step="1" value="50"></div>
+          <p id="vcfHelp" class="hint">OFF preserves the original static pre-filter. ENV sweeps from the shared ADSR; FOLLOW responds to the generated audio.</p>
+        </div>
+        <p class="hint" style="margin:18px 0 0">A conventional 12 dB/oct low-pass changes the harmonics <em>before</em> they reach the dynamic twin filter. This also changes what its detector hears.</p>
+      </section>
+      <section class="panel sp-panel" data-tab-panel="sp" id="spPanel" aria-label="SP-1200-inspired sampler color processor">
+        <div class="panel-title"><h2>SP sampler color</h2><span class="number">04 / 12-BIT SAMPLER PATH</span></div>
+        <div class="fuzz-row sp-switch"><div><strong style="font-size:12px">SP-1200-inspired color</strong><small>Independent of Harmonic Fuzz · before the twin filters</small></div><label class="toggleline" aria-label="Enable SP sampler coloration"><input id="spEnabled" type="checkbox"><span id="spState">OFF</span></label></div>
+        <div class="sp-meta">CONVERTER <strong>12-BIT LINEAR</strong> &nbsp;•&nbsp; REFERENCE CLOCK <strong>26.04 kHz</strong><div id="spClockTag">Original-rate model · zero-order hold · no dither</div></div>
+        <div class="subheading">Output path character</div>
+        <div class="sp-routes" role="group" aria-label="SP output path">
+          <button class="sp-route" type="button" data-sp-path="ch12" aria-pressed="false">1–2<small>DYNAMIC</small></button>
+          <button class="sp-route" type="button" data-sp-path="ch34" aria-pressed="false">3–4<small>DARK</small></button>
+          <button class="sp-route selected" type="button" data-sp-path="ch56" aria-pressed="true">5–6<small>BRIGHT</small></button>
+          <button class="sp-route" type="button" data-sp-path="ch78" aria-pressed="false">7–8<small>RAW</small></button>
+        </div>
+        <div class="controls">
+          <div class="control" data-control="spInput"><div class="names"><label for="spInput">ADC input gain</label><span class="value"></span></div><input id="spInput" type="range" min="0" max="18" step="1" value="9"></div>
+          <div class="control" data-control="spClock"><div class="names"><label for="spClock">Sample clock</label><span class="value"></span></div><input id="spClock" type="range" min="8000" max="26040" step="10" value="26040"></div>
+          <div class="control" data-control="spBlend"><div class="names"><label for="spBlend">SP mix</label><span class="value"></span></div><input id="spBlend" type="range" min="0" max="100" step="1" value="100"></div>
+        </div>
+        <p class="hint" style="margin:17px 0 0">At <strong>26.04 kHz</strong> the rate matches the SP-1200 reference. Lower clock settings are an <strong>intentional creative extension</strong>, not original SP-1200 settings. Output-path filters are approximations, not measured SSM2044/Chebyshev circuit models. This live processor does not resample stored notes or replicate sample-playback pitch shifting.</p>
+      </section>
+    </div>
+    <div class="stack">
+      <section class="panel" data-tab-panel="twin" id="twinPanel">
+        <div class="panel-title"><h2>Twin dynamic filter</h2><span class="number">05 / BASSBALLS ENGINE</span></div>
+        <div class="preset-area" id="presets"><button class="preset active" data-preset="classic">CLASSIC QUACK</button><button class="preset" data-preset="vowel">TALKING BASS</button><button class="preset" data-preset="robot">FUZZY ROBOT</button><button class="preset" data-preset="soft">SOFT VOWEL</button><button class="preset" data-preset="dust">SP DUST</button></div>
+        <div class="big-display">
+          <div class="disptop"><span class="subheading">LIVE RESONANCE MAP</span><span class="live"><i></i> DUAL PEAKS</span></div>
+          <canvas id="spectrum" role="img" aria-label="Live display of the two dynamically moving filter frequency responses"></canvas>
+          <div class="legend"><div><span class="swatch"></span>LOW RESONANCE</div><div><span class="swatch purple"></span>HIGH RESONANCE</div><span>LOG FREQUENCY →</span></div>
+          <div class="readouts"><div class="readout"><small>LOW FILTER</small><strong id="lowRead">180 Hz</strong></div><div class="readout"><small>HIGH FILTER</small><strong id="highRead">730 Hz</strong></div><div class="readout"><small>DETECTOR</small><strong id="envRead">0%</strong><div class="meter"><span id="envMeter"></span></div></div></div>
+        </div>
+        <div class="recovery-panel" aria-label="Filter envelope recovery modes">
+          <div class="recovery-head"><span class="subheading">ENVELOPE CHARACTER</span><output id="effectiveRecovery" aria-live="polite">1.55 s τ</output></div>
+          <div class="mode-buttons" role="group" aria-label="Filter recovery mode">
+            <button class="mode-button" data-mode="tight" type="button" aria-pressed="false"><strong>TIGHT</strong><small>FAST / CLEAN</small></button>
+            <button class="mode-button selected" data-mode="analog" type="button" aria-pressed="true"><strong>ANALOG</strong><small>RC / ORGANIC</small></button>
+            <button class="mode-button" data-mode="expressive" type="button" aria-pressed="false"><strong>EXPRESSIVE</strong><small>LONG / VOWEL</small></button>
+          </div>
+          <p class="mode-description" id="modeDescription">Half-wave envelope detection with a slow, circuit-inspired filter return.</p>
+        </div>
+        <div class="controls">
+          <div class="control" data-control="response"><div class="names"><label for="response">Response</label><span class="value"></span></div><input id="response" type="range" min="0" max="100" step="1" value="70"></div>
+          <div class="control purple" data-control="sweep"><div class="names"><label for="sweep">Sweep depth</label><span class="value"></span></div><input id="sweep" type="range" min="0" max="3.5" step="0.05" value="2.1"></div>
+          <div class="control" data-control="filterQ"><div class="names"><label for="filterQ">Twin resonance (Q)</label><span class="value"></span></div><input id="filterQ" type="range" min="0.7" max="12" step="0.1" value="4.4"></div>
+          <div class="control purple" data-control="recovery"><div class="names"><label for="recovery">Recovery base (τ)</label><span class="value"></span></div><input id="recovery" type="range" min="80" max="3500" step="10" value="1550"></div>
+          <div class="control" data-control="lowBase"><div class="names"><label for="lowBase">Lower band base</label><span class="value"></span></div><input id="lowBase" type="range" min="80" max="550" step="5" value="180"></div>
+          <div class="control purple" data-control="highBase"><div class="names"><label for="highBase">Upper band base</label><span class="value"></span></div><input id="highBase" type="range" min="350" max="2200" step="10" value="730"></div>
+          <div class="control" data-control="mix"><div class="names"><label for="mix">Wet / dry</label><span class="value"></span></div><input id="mix" type="range" min="0" max="100" step="1" value="85"></div>
+          <div class="control orange" data-control="drive"><div class="names"><label for="drive">Fuzz drive</label><span class="value"></span></div><input id="drive" type="range" min="0" max="100" step="1" value="45"></div>
+        </div>
+        <div class="fuzz-row"><div><strong style="font-size:12px">Harmonic fuzz</strong><small>Distort the audio branch before the twin filters</small></div><label class="toggleline" aria-label="Enable fuzz"><input id="fuzz" type="checkbox"><span id="fuzzState">OFF</span></label></div>
+        <p class="hint" style="margin:14px 0 0">An independent detector follows the audio after the synth VCA and pre-filter; its control voltage sweeps both resonances. Recovery character changes the detector without changing your synth ADSR settings. Expressive additionally lengthens the audible note-off tail.</p>
+      </section>
+
+    </div>
+  </div>
+  <section class="panel keyboardpanel" id="keyboardPanel" aria-label="Thumb playable keyboard">
+    <div class="dock-controls">
+      <div class="dock-brand"><strong>PLAY<span class="dock-live-indicator" id="dockAudioDot"></span></strong><span>MONO · LAST NOTE PRIORITY</span></div>
+      <div class="dock-octave" aria-label="Keyboard octave">
+        <button type="button" id="dockOctDown" aria-label="Octave down">−</button>
+        <output id="dockOctave" aria-live="polite">C2</output>
+        <button type="button" id="dockOctUp" aria-label="Octave up">+</button>
+      </div>
+      <button type="button" id="dockStart" class="dock-start" aria-label="Start audio">▶ AUDIO</button>
+      <button type="button" id="keyboardHide" hidden aria-hidden="true">HIDE</button>
+    </div>
+    <div class="piano-container"><div class="piano" id="piano" aria-label="Touch piano: 13 chromatic notes, one octave" role="group"></div></div>
+    <div class="dock-footer"><span id="noteLabel">C2 – C3</span><span>SLIDE · HOLD · PLAY</span></div>
+  </section>
+  <footer class="foot"><span>ALL SOUND GENERATED ON DEVICE · NO EXTERNAL AUDIO FILES</span><span>PASTA LABS · WEB AUDIO DEMO · NOT A NATIVE AU</span></footer>
+</div>
+<script>
+'use strict';
+(() => {
+const $=id=>document.getElementById(id);
+// Stable, host-friendly identifiers. These can become Audio Unit parameter addresses later.
+const PARAMETER_IDS=['wave','octave','subOsc','attack','decay','sustain','release','preCutoff','preQ','response','sweep','filterQ','recovery','recoveryMode','lowBase','highBase','mix','drive','fuzz','spEnabled','spInput','spClock','spBlend','spPath','vcfEnvSource','vcfEnvAmount'];
+const RECOVERY_MODES=Object.freeze({
+ tight: Object.freeze({recoveryScale:.15,attackMs:3.5,halfWave:false,shape:.9,ampTailScale:1,description:'Fast full-wave follower; clean short return. The synth audio release is unchanged.'}),
+ analog: Object.freeze({recoveryScale:1,attackMs:2,halfWave:true,shape:.82,ampTailScale:1,description:'Half-wave peak detector with an asymmetric, slow RC-style decay. Audio ADSR stays independent.'}),
+ expressive: Object.freeze({recoveryScale:1.5,attackMs:2,halfWave:true,shape:.65,ampTailScale:1.65,description:'Longer RC-style filter memory, more pronounced late vowel motion and 1.65× note-off audio tail.'})
+});
+const defaults={wave:'sawtooth',octave:2,subOsc:false,attack:5,decay:260,sustain:20,release:650,preCutoff:83,preQ:0.8,response:70,sweep:2.1,filterQ:4.4,recovery:1550,recoveryMode:'analog',lowBase:180,highBase:730,mix:85,drive:45,fuzz:false,spEnabled:false,spInput:9,spClock:26040,spBlend:100,spPath:'ch56',vcfEnvSource:0,vcfEnvAmount:50};
+const presets={
+ classic:{...defaults},
+ vowel:{...defaults,wave:'pulse',preCutoff:76,preQ:1.3,attack:3,decay:390,sustain:23,release:780,recovery:1550,response:86,sweep:2.45,filterQ:7.3,lowBase:170,highBase:810,mix:92},
+ robot:{...defaults,wave:'square',preCutoff:92,attack:1,decay:170,sustain:15,release:320,response:94,sweep:2.9,filterQ:8.2,recovery:1000,lowBase:215,highBase:920,mix:100,fuzz:true,drive:67},
+ soft:{...defaults,wave:'triangle',preCutoff:66,attack:40,decay:500,sustain:35,release:920,response:58,sweep:1.6,filterQ:2.5,recovery:1800,lowBase:160,highBase:690,mix:72,drive:22},
+ dust:{...defaults,wave:'sawtooth',preCutoff:91,attack:2,decay:195,sustain:10,release:660,response:83,sweep:2.2,filterQ:5.3,spEnabled:true,spInput:12,spClock:26040,spBlend:100,spPath:'ch78'}
+};
+let ctx=null,pre=null,processor=null,analyser=null,master=null,engine=null,subWave=null;
+let workletEnabled=false,workletState=null,workletSampler=null,pendingSend=false;
+const p=new Proxy({...defaults},{set(target,key,value){target[key]=value;if(PARAMETER_IDS.includes(key)&&!pendingSend){pendingSend=true;queueMicrotask(()=>{pendingSend=false;if(workletEnabled&&processor?.port)processor.port.postMessage({type:'parameters',params:{...p}})})}return true}});
+const held=new Map();let mono=null;const NOTE_KEYS=['a','w','s','e','d','f','t','g','y','h','u','j','k','o','l','p',';'];
+const WHITE_SEMIS=[0,2,4,5,7,9,11,12,14,16],BLACK_POS={1:0,3:1,6:3,8:4,10:5,13:7,15:8};
+const noteNames=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const freqFromOct=(o,semi)=>440*Math.pow(2,(((o+1)*12+semi)-69)/12);
+const cutoffFromSlider=x=>Math.round(90*Math.pow(15000/90,x/100));
+const niceHz=x=>x>=1000?(x/1000).toFixed(x>=10000?1:2)+'k':Math.round(x)+' Hz';
+const recoveryMs=()=>p.recovery*RECOVERY_MODES[p.recoveryMode].recoveryScale;
+const timeLabel=ms=>ms>=1000?(ms/1000).toFixed(2)+' s':Math.round(ms)+' ms';
+function updateRecoveryUI(){
+ const config=RECOVERY_MODES[p.recoveryMode];
+ document.querySelectorAll('.mode-button').forEach(el=>{const selected=el.dataset.mode===p.recoveryMode;el.classList.toggle('selected',selected);el.setAttribute('aria-pressed',String(selected))});
+ $('effectiveRecovery').textContent=timeLabel(recoveryMs())+' τ';
+ $('modeDescription').textContent=config.description;
+}
+function valueText(id,val){const u={attack:' ms',decay:' ms',sustain:'%',release:' ms',preQ:' Q',response:'%',sweep:' oct',filterQ:' Q',recovery:' ms',lowBase:' Hz',highBase:' Hz',mix:'%',drive:'%'};if(id==='spClock')return (val/1000).toFixed(2)+' kHz';if(id==='spInput')return '+'+val+' dB';if(id==='spBlend'||id==='vcfEnvAmount')return val+'%';if(id==='preCutoff')return niceHz(cutoffFromSlider(val));if(id==='sweep'||id==='filterQ'||id==='preQ')return Number(val).toFixed(id==='sweep'?2:1)+(u[id]);return id==='recovery'?timeLabel(val):Math.round(val)+(u[id]||'')}
+function refreshSPUI(){
+ $('spEnabled').checked=p.spEnabled;
+ $('spState').textContent=p.spEnabled?'ON':'OFF';
+ document.querySelectorAll('.sp-route').forEach(el=>{const active=el.dataset.spPath===p.spPath;el.classList.toggle('selected',active);el.setAttribute('aria-pressed',String(active))});
+ $('spClockTag').textContent=p.spClock===26040?'Original-rate model · zero-order hold · no dither':'Creative clock reduction · not original SP rate';
+}
+function markPreset(name){document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('active',b.dataset.preset===name));}
+function displayControls(){for(const id of ['attack','decay','sustain','release','preCutoff','preQ','response','sweep','filterQ','recovery','lowBase','highBase','mix','drive','spInput','spClock','spBlend','vcfEnvAmount']){const input=$(id);input.value=p[id];const container=input.closest('.control');container.querySelector('.value').textContent=valueText(id,p[id]);}document.querySelectorAll('.wavebutton').forEach(el=>{const match=el.dataset.wave===p.wave;el.classList.toggle('selected',match);el.setAttribute('aria-pressed',String(match))});$('subOsc').checked=p.subOsc;$('fuzz').checked=p.fuzz;$('fuzzState').textContent=p.fuzz?'ON':'OFF';refreshSPUI();refreshVCFUI();$('octDisplay').textContent='C'+p.octave;$('noteLabel').textContent=`C${p.octave} – C${p.octave+1} · TOUCH / SLIDE`;if($('dockOctave'))$('dockOctave').textContent='C'+p.octave;updatePre();applyOscillatorSettings();updateRecoveryUI();updateKeyNames();updateKeys()}
+function applyPreset(name){const currentMode=p.recoveryMode;Object.assign(p,presets[name]);p.recoveryMode=currentMode;markPreset(name);displayControls()}
+for(const id of ['attack','decay','sustain','release','preCutoff','preQ','response','sweep','filterQ','recovery','lowBase','highBase','mix','drive','spInput','spClock','spBlend','vcfEnvAmount']){$(id).addEventListener('input',e=>{p[id]=Number(e.target.value);e.target.closest('.control').querySelector('.value').textContent=valueText(id,p[id]);markPreset('');if(id.startsWith('pre'))updatePre();if(id==='recovery')updateRecoveryUI();if(id==='spClock')refreshSPUI();if(id==='vcfEnvAmount'){updatePre();if(p.vcfEnvSource===1&&held.size)syncMono(true)}})}
+document.querySelectorAll('.wavebutton').forEach(b=>b.addEventListener('click',()=>{p.wave=b.dataset.wave;markPreset('');displayControls()}));
+document.querySelectorAll('.mode-button').forEach(b=>b.addEventListener('click',()=>{p.recoveryMode=b.dataset.mode;updateRecoveryUI();markPreset('')}));
+$('subOsc').addEventListener('change',e=>{p.subOsc=e.target.checked;applyOscillatorSettings();markPreset('')});$('fuzz').addEventListener('change',e=>{p.fuzz=e.target.checked;$('fuzzState').textContent=p.fuzz?'ON':'OFF';markPreset('')});$('spEnabled').addEventListener('change',e=>{p.spEnabled=e.target.checked;refreshSPUI();markPreset('')});
+document.querySelectorAll('.sp-route').forEach(b=>b.addEventListener('click',()=>{p.spPath=b.dataset.spPath;refreshSPUI();markPreset('')}));
+document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>applyPreset(b.dataset.preset)));
+let followAnalyser=null,followSamples=null,followGain=0;
+function modCutoff(sourceValue){const base=cutoffFromSlider(p.preCutoff);return ctx?Math.min(ctx.sampleRate*.43,base*Math.pow(2,5*(p.vcfEnvAmount/100)*clamp(sourceValue,0,1))):base}
+function updatePre(){if(pre&&ctx){pre.frequency.cancelScheduledValues(ctx.currentTime);pre.frequency.setTargetAtTime(cutoffFromSlider(p.preCutoff),ctx.currentTime,.009);pre.Q.setTargetAtTime(p.preQ,ctx.currentTime,.009)}}
+function refreshVCFUI(){
+ document.querySelectorAll('.vcf-source').forEach(el=>{const active=+el.dataset.vcfSource===p.vcfEnvSource;el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active))});
+ $('vcfEnvSource').value=p.vcfEnvSource;
+ $('vcfHelp').textContent=[
+ 'OFF: original static low-pass sound. Choose ENV or FOLLOW for upward cutoff movement.',
+ 'ENV: the same note ADSR drives the cutoff, like a classic synth VCF envelope slider. Play a new note to hear the sweep.',
+ 'FOLLOW: oscillator/VCA audio level drives the cutoff (smoothed on the browser audio thread).'
+ ][p.vcfEnvSource];
+}
+function setVCFSource(src){p.vcfEnvSource=src;refreshVCFUI();updatePre();markPreset('');if(src===1&&held.size)syncMono(true)}
+document.querySelectorAll('.vcf-source').forEach(el=>el.addEventListener('click',()=>setVCFSource(+el.dataset.vcfSource)));
+function scheduleEnvelopeVCF(onset,A,D,peak,sustain){
+ if(!ctx||!pre||p.vcfEnvSource!==1)return;
+ const cutoff=pre.frequency,base=cutoffFromSlider(p.preCutoff);cutoff.cancelScheduledValues(ctx.currentTime);
+ cutoff.setValueAtTime(base,ctx.currentTime);
+ cutoff.setValueAtTime(base,onset);
+ cutoff.linearRampToValueAtTime(modCutoff(peak/.26),onset+A);
+ cutoff.linearRampToValueAtTime(modCutoff(peak*sustain/.26),onset+A+D);
+}
+function animateVCF(){
+ if(!ctx||!pre||p.vcfEnvSource!==2||!followAnalyser)return;
+ followAnalyser.getByteTimeDomainData(followSamples);
+ let sum=0;for(const b of followSamples){const x=(b-128)/128;sum+=x*x}
+ const level=Math.sqrt(sum/followSamples.length);
+ followGain+=(clamp(level*6,0,1)-followGain)*.18;
+ pre.frequency.setTargetAtTime(modCutoff(followGain),ctx.currentTime,.015);
+}
+function changeOct(d){p.octave=clamp(p.octave+d,1,5);$('octDisplay').textContent='C'+p.octave;$('noteLabel').textContent=`C${p.octave} – C${p.octave+1} · TOUCH / SLIDE`;if($('dockOctave'))$('dockOctave').textContent='C'+p.octave;updateKeyNames();updateKeys();markPreset('')}
+$('octDown').addEventListener('click',()=>changeOct(-1));$('octUp').addEventListener('click',()=>changeOct(1));$('dockOctDown').addEventListener('click',()=>changeOct(-1));$('dockOctUp').addEventListener('click',()=>changeOct(1));
+function noteLabel(semi){return noteNames[semi%12]+(p.octave+Math.floor(semi/12))}
+function updateKeyNames(){document.querySelectorAll('.piano-key').forEach(el=>{const semi=+el.dataset.semi;const name=el.querySelector('em');if(name)name.textContent=noteLabel(semi)})}
+function buildPiano(){
+ const target=$('piano');target.innerHTML='';
+ const white=[0,2,4,5,7,9,11,12],black={1:0,3:1,6:3,8:4,10:5};
+ const whiteWidth=100/white.length;
+ for(let semi=0;semi<=12;semi++){
+  const isBlack=Object.prototype.hasOwnProperty.call(black,semi);
+  const el=document.createElement('button');el.type='button';el.className='piano-key '+(isBlack?'black':'white');
+  el.dataset.semi=semi;
+  el.setAttribute('aria-label',noteLabel(semi));
+  if(isBlack){el.style.width=(whiteWidth*.64)+'%';el.style.left=((black[semi]+1)*whiteWidth-whiteWidth*.32)+'%'}
+  else{el.style.width=whiteWidth+'%';el.style.left=(white.indexOf(semi)*whiteWidth)+'%'}
+  el.innerHTML=`${!isBlack?'<em>'+noteLabel(semi)+'</em>':''}`;
+  target.appendChild(el);
+ }
+ const touchMap=new Map();
+ const noteAt=(x,y)=>{const el=document.elementFromPoint(x,y)?.closest('.piano-key');return el&&target.contains(el)?Number(el.dataset.semi):null};
+ const start=e=>{
+  if(e.button!==0&&e.pointerType==='mouse')return;
+  const semi=noteAt(e.clientX,e.clientY);
+  if(semi===null)return;
+  e.preventDefault();target.setPointerCapture?.(e.pointerId);
+  touchMap.set(e.pointerId,semi);playHeld(semi,'pointer-'+e.pointerId);
+ };
+ const move=e=>{
+  if(!touchMap.has(e.pointerId))return;
+  e.preventDefault();const semi=noteAt(e.clientX,e.clientY);
+  const prev=touchMap.get(e.pointerId);
+  if(semi===prev)return;
+  stopHeld('pointer-'+e.pointerId);
+  if(semi===null)touchMap.delete(e.pointerId);
+  else{touchMap.set(e.pointerId,semi);playHeld(semi,'pointer-'+e.pointerId)}
+ };
+ const stop=e=>{if(!touchMap.has(e.pointerId))return;e.preventDefault();touchMap.delete(e.pointerId);stopHeld('pointer-'+e.pointerId)};
+ target.addEventListener('pointerdown',start);
+ target.addEventListener('pointermove',move);
+ for(const ev of ['pointerup','pointercancel','lostpointercapture'])target.addEventListener(ev,stop);
+}
+buildPiano();
+// In mono mode, illuminate only the active (most recently pressed) pitch.
+function lastHeldMidi(){let last=null;for(const data of held.values())last=data.midi;return last}
+function updateKeys(){const active=lastHeldMidi();document.querySelectorAll('.piano-key').forEach(el=>el.classList.toggle('pressed',active===(p.octave+1)*12+Number(el.dataset.semi)))}
+// SP-inspired AUDIO branch model. This is not a sample-memory or transposition engine.
+// Processing order: input trim -> antialias biquads -> fixed-rate sample/hold -> 12-bit
+// signed quantizer -> selectable approximate output filters -> crossfaded bypass/blend.
+// State is sample-rate independent, persists across Web Audio blocks and can be ported to C++.
+class SPColorEngine {
+ constructor(fs){
+  this.fs=fs;this.clock=0;this.phase=0;this.capture=0;this.previousAA=0;
+  this.aa1=[0,0],this.aa2=[0,0];this.aaCoeffs=null;
+  this.dark=[0,0,0];this.bright=[0,0];this.dynamic=[0,0,0,0];this.env=0;
+  this.lastRoute='ch56';this.previousRoute='ch56';this.routeFade=1;this.wetSmoothed=0;
+  this.lastQuantized=0;this.lastOutput=0;
+ }
+ // RBJ 2-pole Butterworth anti-alias stage; two cascades are deliberately approximate.
+ lowPassCoefficients(cutoff){
+  const w=2*Math.PI*clamp(cutoff,200,this.fs*.43)/this.fs;
+  const cos=Math.cos(w),sin=Math.sin(w),alpha=sin/(2*Math.SQRT1_2);
+  const a0=1+alpha;
+  return [((1-cos)/2)/a0,(1-cos)/a0,((1-cos)/2)/a0,(-2*cos)/a0,(1-alpha)/a0];
+ }
+ biquad(x,s){const [b0,b1,b2,a1,a2]=this.aaCoeffs;const y=b0*x+s[0];s[0]=b1*x-a1*y+s[1];s[1]=b2*x-a2*y;return y}
+ beginBlock(){
+  if(this.clock!==p.spClock){this.clock=p.spClock;this.aaCoeffs=this.lowPassCoefficients(Math.min(11100,this.clock*.435))}
+  if(this.lastRoute!==p.spPath){this.previousRoute=this.lastRoute;this.lastRoute=p.spPath;this.routeFade=0}
+  // Each output coloration is deliberately an *approximation*, NOT measured hardware calibration.
+  const pole=hz=>1-Math.exp(-2*Math.PI*Math.min(hz,this.fs*.44)/this.fs);
+  this.darkPole=pole(5700);this.brightPole=pole(9000);
+  this.routeRamp=1/(this.fs*.012);
+  this.wetPole=1-Math.exp(-1/(this.fs*.008));
+  this.inputGain=Math.pow(10,p.spInput/20);
+  this.heldRate=this.clock/this.fs;
+  this.targetWet=p.spEnabled?p.spBlend/100:0;
+ }
+ process(x){
+  // Band-limit the source BEFORE capture, as a real sampling input stage must do.
+  const aa=this.biquad(this.biquad(x,this.aa1),this.aa2);
+  this.phase+=this.heldRate;
+  if(this.phase>=1){
+   // Fractional capture instant between host frames, but NO interpolated DAC output.
+   const fraction=clamp((1-(this.phase-this.heldRate))/this.heldRate,0,1);
+   const adcInput=this.previousAA+(aa-this.previousAA)*fraction;
+   const hot=clamp(adcInput*this.inputGain,-1,1-1/2048);
+   this.capture=Math.round(hot*2048)/2048/this.inputGain;
+   this.lastQuantized=this.capture;
+   this.phase-=1;
+  }
+  this.previousAA=aa;
+  const held=this.capture;
+  // Four example output characters (real hardware uses different filter topologies).
+  let b=held;for(let i=0;i<2;i++){this.bright[i]+=this.brightPole*(b-this.bright[i]);b=this.bright[i]}
+  let d=held;for(let i=0;i<3;i++){this.dark[i]+=this.darkPole*(d-this.dark[i]);d=this.dark[i]}
+  // Channel 1-2-inspired transient-responsive low-pass: high cutoff on attack,
+  // falling toward its rest value. This is NOT an SSM2044 ladder simulation.
+  const target=Math.abs(held);
+  this.env+=(target>this.env?0.004:0.00012)*(target-this.env);
+  const dynHz=2300+6200*clamp(this.env*5,0,1);
+  const dp=1-Math.exp(-2*Math.PI*Math.min(dynHz,this.fs*.44)/this.fs);
+  let v=held;for(let i=0;i<4;i++){this.dynamic[i]+=dp*(v-this.dynamic[i]);v=this.dynamic[i]}
+  const routeOut=route=>route==='ch12'?v:route==='ch34'?d:route==='ch56'?b:held;
+  const a=routeOut(this.previousRoute),z=routeOut(this.lastRoute);
+  this.routeFade=Math.min(1,this.routeFade+this.routeRamp);
+  const colored=a+(z-a)*this.routeFade;
+  this.wetSmoothed+=(this.targetWet-this.wetSmoothed)*this.wetPole;
+  const result=x+(colored-x)*this.wetSmoothed;
+  this.lastOutput=result;
+  return result;
+ }
+ getState(){return {enabled:p.spEnabled,clockHz:this.clock,bitDepth:12,path:p.spPath,inputDb:p.spInput,blend:p.spBlend,wet:this.wetSmoothed,heldSample:this.lastQuantized}}
+}
+// A sample-domain envelope follower and two stable, nonlinear-time-varying state-variable band-pass filters.
+// This intentionally models the classic pedal's musical architecture, not its full transistor/op-amp circuitry.
+class FilterEngine{
+ constructor(sampleRate){this.fs=sampleRate;this.env=0;this.control=0;this.lp1=0;this.bp1=0;this.lp2=0;this.bp2=0;this.coef1=null;this.coef2=null;this.lastLevel=0;this.lastLow=180;this.lastHigh=730;this.sampleCount=0;this.sp=new SPColorEngine(sampleRate)}
+ coef(f,Q){const g=Math.tan(Math.PI*clamp(f,25,this.fs*.40)/this.fs),k=1/Q;const a1=1/(1+g*(g+k));return [a1,g*a1,g*g*a1]}
+ render(input,output){
+  // Each mode changes DETECTOR behavior; audio is still processed by the same twin filters.
+  const mode=RECOVERY_MODES[p.recoveryMode];
+  this.sp.beginBlock();
+  const A=Math.exp(-1/(this.fs*mode.attackMs/1000));
+  const R=Math.exp(-1/(this.fs*(recoveryMs()/1000)));
+  const controlSmooth=Math.exp(-1/(this.fs*.008));
+  const responseGain=.28+(p.response/100)*3.35;
+  const Q=p.filterQ,depth=p.sweep,wet=p.mix/100,dist=p.fuzz,drive=1+p.drive*.20;
+  let env=this.env,control=this.control,lp1=this.lp1,bp1=this.bp1,lp2=this.lp2,bp2=this.bp2;
+  let c1=this.coef1,c2=this.coef2,low=this.lastLow,high=this.lastHigh;
+  for(let i=0;i<input.length;i++){
+   const x=input[i]||0;
+   // Real half-wave detector: negative lobes do not charge the peak capacitor.
+   // The peak storage keeps its voltage between peaks, then leaks exponentially.
+   const detected=(mode.halfWave?Math.max(0,x):Math.abs(x))*responseGain;
+   env=detected+(env-detected)*(detected>env?A:R);
+   control=env+(control-env)*controlSmooth;
+   if((this.sampleCount++ & 15)===0||!c1||!c2){
+    const mod=Math.pow(clamp(control,0,1),mode.shape);
+    low=clamp(p.lowBase*Math.pow(2,mod*depth),25,this.fs*.36);
+    high=clamp(p.highBase*Math.pow(2,mod*depth),25,this.fs*.36);
+    c1=this.coef(low,Q);c2=this.coef(high,Q);
+   }
+   // Detector deliberately sees the unprocessed x; fuzz and SP coloration change
+   // AUDIO only, maintaining predictable Bassballs response on note-off.
+   const fuzzed=dist?Math.tanh(x*drive)/(1+drive*.19):x;
+   const audio=this.sp.process(fuzzed);
+   // TPT SVF integrators: states persist between audio blocks and mode switches.
+   let v3=audio-lp1,v1=c1[0]*bp1+c1[1]*v3,v2=lp1+c1[1]*bp1+c1[2]*v3;bp1=2*v1-bp1;lp1=2*v2-lp1;const b1=v1;
+   v3=audio-lp2;v1=c2[0]*bp2+c2[1]*v3;v2=lp2+c2[1]*bp2+c2[2]*v3;bp2=2*v1-bp2;lp2=2*v2-lp2;const b2=v1;
+   const filtered=((b1+b2)/Q)*.91+audio*.115;
+   const y=audio*(1-wet)+filtered*wet;
+   const limited=Math.tanh(y*1.35)/1.35;
+   output[i]=Number.isFinite(limited)?limited:0;
+  }
+  this.env=env;this.control=control;this.lp1=lp1;this.bp1=bp1;this.lp2=lp2;this.bp2=bp2;
+  this.coef1=c1;this.coef2=c2;this.lastLevel=clamp(control,0,1);this.lastLow=low;this.lastHigh=high;
+ }
+}
+// Snapshot API for future AU parameter mapping, UI tests, and deterministic patch comparisons.
+window.BassballsSynth=Object.freeze({
+ parameterIds:Object.freeze([...PARAMETER_IDS]),
+ getParameters:()=>({...p}),
+ getDetectorState:()=>workletEnabled?workletState:(engine?{level:engine.lastLevel,lowHz:engine.lastLow,highHz:engine.lastHigh,recoveryMs:recoveryMs(),mode:p.recoveryMode}:null),
+ getSamplerState:()=>workletEnabled?workletSampler:(engine?engine.sp.getState():null),
+ signalPath:Object.freeze(['oscillator','ampADSR','preLowpass','bassballsDetectorTap','fuzz','spColor','twinFilter','output']),
+ audioBackend:()=>workletEnabled?'AudioWorklet':'ScriptProcessor fallback',
+ getPatch:()=>({format:'bassballs-lab-patch',version:1,parameters:Object.fromEntries(PARAMETER_IDS.map(id=>[id,p[id]]))})
+});
+function pulsePeriodicWave(audio){const n=80,real=new Float32Array(n),imag=new Float32Array(n),d=.24;for(let i=1;i<n;i++){real[i]=2/(Math.PI*i)*Math.sin(2*Math.PI*i*d);imag[i]=2/(Math.PI*i)*(1-Math.cos(2*Math.PI*i*d))}return audio.createPeriodicWave(real,imag,{disableNormalization:false})}
+// A single persistent oscillator pair and one VCA guarantee true monophony.
+// All note changes, including release tails, pass through this ONE voice.
+function applyOscillatorSettings(){
+ if(!mono||!ctx)return;
+ if(p.wave==='pulse')mono.osc.setPeriodicWave(subWave);else mono.osc.type=p.wave;
+ mono.subgain.gain.setTargetAtTime(p.subOsc ? 0.36 : 0,ctx.currentTime,.008);
+}
+async function ensureAudio(){
+ if(ctx){if(ctx.state==='suspended')await ctx.resume();return ctx.state==='running'}
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)throw new Error('This browser does not support Web Audio.');
+  ctx=new AC({latencyHint:'interactive'});
+  pre=ctx.createBiquadFilter();pre.type='lowpass';pre.frequency.value=cutoffFromSlider(p.preCutoff);pre.Q.value=p.preQ;
+  // Keep DSP on the real-time rendering thread when AudioWorklet is available.
+  // The source is built from the SAME FilterEngine/SPColorEngine class definitions;
+  // this avoids maintaining two divergent browser DSP algorithms.
+  try {
+   if(!ctx.audioWorklet)throw new Error('AudioWorklet unavailable');
+   const workletSource=`'use strict';\n`+
+      `const clamp=${clamp.toString()};\n`+
+      `const RECOVERY_MODES=${JSON.stringify(RECOVERY_MODES)};\n`+
+      `let p=${JSON.stringify({...p})};\n`+
+      `const recoveryMs=()=>p.recovery*RECOVERY_MODES[p.recoveryMode].recoveryScale;\n`+
+      `${SPColorEngine.toString()}\n${FilterEngine.toString()}\n`+
+      `class BassballsAudioProcessor extends AudioWorkletProcessor {\n`+
+      `constructor(){super();this.engine=new FilterEngine(sampleRate);this.count=0;this.port.onmessage=e=>{if(e.data?.type==='parameters')Object.assign(p,e.data.params)}}\n`+
+      `process(inputs,outputs){const output=outputs[0]?.[0];if(!output)return true;const input=inputs[0]?.[0]||new Float32Array(output.length);this.engine.render(input,output);if((++this.count%10)===0){this.port.postMessage({type:'meter',detector:{level:this.engine.lastLevel,lowHz:this.engine.lastLow,highHz:this.engine.lastHigh,recoveryMs:recoveryMs(),mode:p.recoveryMode},sampler:this.engine.sp.getState()})}return true}}\n`+
+      `registerProcessor('bassballs-engine',BassballsAudioProcessor);`;
+   const workletUrl=URL.createObjectURL(new Blob([workletSource],{type:'application/javascript'}));
+   try{await ctx.audioWorklet.addModule(workletUrl)}finally{URL.revokeObjectURL(workletUrl)}
+   processor=new AudioWorkletNode(ctx,'bassballs-engine',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[1]});
+   workletEnabled=true;
+   processor.port.onmessage=e=>{if(e.data?.type==='meter'){workletState=e.data.detector;workletSampler=e.data.sampler}};
+   processor.port.postMessage({type:'parameters',params:{...p}});
+   $('engineBadge').textContent='DSP / AUDIOWORKLET';
+  }catch(workletError){
+   console.warn('AudioWorklet unavailable; using legacy fallback:',workletError);
+   engine=new FilterEngine(ctx.sampleRate);
+   processor=ctx.createScriptProcessor(1024,1,1);
+   processor.onaudioprocess=e=>engine.render(e.inputBuffer.getChannelData(0),e.outputBuffer.getChannelData(0));
+   $('engineBadge').textContent='DSP / LEGACY FALLBACK';
+  }
+  master=ctx.createGain();master.gain.value=.75;
+  const limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-6;limiter.knee.value=9;limiter.ratio.value=7;limiter.attack.value=.005;limiter.release.value=.11;
+  analyser=ctx.createAnalyser();analyser.fftSize=1024;analyser.smoothingTimeConstant=.85;
+  pre.connect(processor);processor.connect(master);master.connect(limiter);limiter.connect(analyser);analyser.connect(ctx.destination);
+  subWave=pulsePeriodicWave(ctx);
+  const amp=ctx.createGain();amp.gain.value=0;
+  const osc=ctx.createOscillator(),sub=ctx.createOscillator(),subgain=ctx.createGain();
+  osc.frequency.value=110;sub.frequency.value=55;
+  sub.type='sine';subgain.gain.value=p.subOsc ? 0.36 : 0;
+  osc.connect(amp);sub.connect(subgain);subgain.connect(amp);amp.connect(pre);
+  // A zero-gain monitoring branch tracks the VCA level without altering the main output.
+  followAnalyser=ctx.createAnalyser();followAnalyser.fftSize=512;followSamples=new Uint8Array(followAnalyser.fftSize);
+  const followMute=ctx.createGain();followMute.gain.value=0;
+  amp.connect(followAnalyser);followAnalyser.connect(followMute);followMute.connect(ctx.destination);
+  mono={amp,osc,sub,subgain,currentMidi:null};
+  applyOscillatorSettings();
+  osc.start();sub.start(); // Both belong to the SAME note, not two independently playable notes.
+  await ctx.resume();
+  $('audioDot').classList.add('on');$('audioStatus').textContent='AUDIO LIVE';$('startButton').textContent='● AUDIO ON';$('startButton').classList.add('on');$('dockStart').classList.add('on');$('dockStart').textContent='● ON';$('dockAudioDot').classList.add('on');
+  return true;
+ }catch(err){console.error(err);$('audioStatus').textContent='AUDIO ERROR';$('startButton').textContent='Retry audio';alert('Could not start Web Audio: '+err.message);return false}
+}
+$('startButton').addEventListener('click',ensureAudio);$('dockStart').addEventListener('click',ensureAudio);
+function syncMono(force=false){
+ if(!mono||!ctx)return;
+ const midi=lastHeldMidi();
+ if(midi===mono.currentMidi&&!force)return; // Same pitch can be held by several input sources.
+ const t=ctx.currentTime+.003,g=mono.amp.gain;
+ // Hold the current interpolated level so a new note does not generate a click.
+ if(typeof g.cancelAndHoldAtTime==='function')g.cancelAndHoldAtTime(t);
+ else{g.cancelScheduledValues(t);g.setValueAtTime(g.value,t)}
+ if(midi===null){
+  // A normal release, with no secondary voice to overlap the release tail.
+  g.setTargetAtTime(0,t,Math.max(.008,p.release*RECOVERY_MODES[p.recoveryMode].ampTailScale/4000));
+  if(p.vcfEnvSource===1&&pre){const f=pre.frequency;f.cancelScheduledValues(t);f.setTargetAtTime(cutoffFromSlider(p.preCutoff),t,Math.max(.008,p.release/4000));}
+ }else{
+  const f=440*Math.pow(2,(midi-69)/12);
+  mono.osc.frequency.setTargetAtTime(f,t,.003);
+  mono.sub.frequency.setTargetAtTime(f/2,t,.003);
+  // Retrigger the ONE amplitude envelope for each newly selected note.
+  // An 8ms down-ramp suppresses clicks when changing notes mid-attack.
+  const onset=t+.008,A=Math.max(.002,p.attack/1000),D=Math.max(.01,p.decay/1000);
+  g.linearRampToValueAtTime(0,onset);
+  const active=[...held.values()].at(-1);const velocity=active?.velocity??127;
+  const peak=.26*Math.max(.01,velocity/127);
+  g.linearRampToValueAtTime(peak,onset+A);
+  g.linearRampToValueAtTime(peak*p.sustain/100,onset+A+D);
+  scheduleEnvelopeVCF(onset,A,D,peak,p.sustain/100);
+ }
+ mono.currentMidi=midi;
+}
+async function playHeld(semi,source){
+ if(held.has(source))return;
+ held.set(source,{midi:(p.octave+1)*12+semi,velocity:127});
+ updateKeys();
+ const ok=await ensureAudio();
+ if(ok)syncMono(); // Recheck priority AFTER resume: early keys may have been released.
+}
+function stopHeld(source){
+ if(!held.has(source))return;
+ held.delete(source);
+ updateKeys();
+ syncMono();
+}
+document.addEventListener('keydown',e=>{if(e.repeat||e.altKey||e.ctrlKey||e.metaKey)return;const tag=e.target&&e.target.tagName;if(tag==='INPUT'&&(e.target.type==='text'||e.target.type==='number'))return;const k=e.key.toLowerCase();if(k==='z'||k==='x'){if(e.target.tagName==='INPUT'&&e.target.type==='range')return;e.preventDefault();changeOct(k==='x'?1:-1);return}const semi=NOTE_KEYS.indexOf(k);if(semi<0)return;e.preventDefault();playHeld(semi,'key-'+k)});
+document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(NOTE_KEYS.includes(k)){e.preventDefault();stopHeld('key-'+k)}});
+window.addEventListener('blur',()=>{for(const k of [...held.keys()])stopHeld(k)});document.addEventListener('visibilitychange',()=>{if(document.hidden)for(const k of [...held.keys()])stopHeld(k)});
+
+// View density is UI-only, not a host-automatable audio parameter.
+const layoutToggle=$('layoutToggle'),keyboardPanel=$('keyboardPanel');
+let keyboardVisible=true;
+function updateLayout(visible){
+ if(window.matchMedia('(max-width:700px)').matches)visible=true;
+ keyboardVisible=visible;keyboardPanel.hidden=!visible;document.querySelector('.shell').classList.toggle('compact',!visible);
+ layoutToggle.setAttribute('aria-pressed',String(!visible));layoutToggle.textContent=visible?'⌗  COMPACT':'▦  SHOW KEYS';
+ layoutToggle.classList.toggle('active',!visible);try{localStorage.setItem('bblab.keyboardVisible',visible?'1':'0')}catch{}
+}
+// The Pocket edition always starts with the keyboard available.
+updateLayout(true);
+layoutToggle.addEventListener('click',()=>updateLayout(!keyboardVisible));
+$('keyboardHide').addEventListener('click',()=>updateLayout(false));
+// Preset portability: explicit schema/allowed identifiers, not a copy of internal runtime state.
+function patchDocument(){return {format:'bassballs-lab-patch',version:1,createdWith:'Pasta Labs Pocket 1.0',parameters:Object.fromEntries(PARAMETER_IDS.map(id=>[id,p[id]]))}}
+$('exportPatch').addEventListener('click',()=>{
+ const blob=new Blob([JSON.stringify(patchDocument(),null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='bassballs-lab-patch.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)
+});
+$('importPatch').addEventListener('click',()=>$('patchFile').click());
+$('patchFile').addEventListener('change',async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ try{
+  if(file.size>64000)throw Error('Patch file too large');
+  const saved=JSON.parse(await file.text());if(saved.format!=='bassballs-lab-patch'||saved.version!==1||!saved.parameters)throw Error('Unsupported patch format');
+  const next={};
+  for(const id of PARAMETER_IDS){if(!(id in saved.parameters))continue;const incoming=saved.parameters[id];
+   if(['wave','recoveryMode','spPath'].includes(id)){const allowed={wave:['sine','triangle','square','sawtooth','pulse'],recoveryMode:['tight','analog','expressive'],spPath:['ch12','ch34','ch56','ch78']}[id];if(!allowed.includes(incoming))throw Error('Invalid '+id);next[id]=incoming}
+   else if(['fuzz','subOsc','spEnabled'].includes(id)){if(typeof incoming!=='boolean')throw Error('Invalid '+id);next[id]=incoming}
+   else{const el=$(id);if(id==='octave'){if(!Number.isInteger(incoming)||incoming<1||incoming>5)throw Error('Invalid octave')}else if(!el||typeof incoming!=='number'||!Number.isFinite(incoming)||incoming<Number(el.min)||incoming>Number(el.max))throw Error('Out-of-range '+id);next[id]=incoming}
+  }
+  Object.assign(p,next);markPreset('');displayControls();
+ }catch(err){alert('Could not load patch: '+err.message)}finally{e.target.value=''}
+});
+// Web MIDI is a PROTOTYPE controller path. Native AU will receive MIDI from Ableton's host bus.
+let midiAccess=null;
+function handleMidi(e){const [status,note,velocity]=e.data||[];const kind=status&0xf0;if((kind===0x90&&velocity>0)){const key=`midi-${status&0x0f}-${note}`;held.delete(key);held.set(key,{midi:note,velocity});updateKeys();ensureAudio().then(ok=>{if(ok)syncMono(true)})}else if(kind===0x80||(kind===0x90&&velocity===0)){stopHeld(`midi-${status&0x0f}-${note}`)}else if(kind===0xb0&&(note===123||note===120)){for(const key of [...held.keys()])if(key.startsWith('midi-'))stopHeld(key)}}
+function bindMidi(){if(!midiAccess)return;for(const input of midiAccess.inputs.values())input.onmidimessage=handleMidi;const count=[...midiAccess.inputs.values()].length;$('midiButton').textContent=count?`MIDI ${count} INPUT${count===1?'':'S'} ✓`:'MIDI: NO DEVICE'}
+$('midiButton').addEventListener('click',async()=>{if(!navigator.requestMIDIAccess){$('midiButton').textContent='MIDI UNSUPPORTED';return}try{midiAccess=await navigator.requestMIDIAccess({sysex:false});midiAccess.onstatechange=bindMidi;bindMidi()}catch(err){console.warn(err);$('midiButton').textContent='MIDI PERMISSION DENIED'}});
+// Make patch layout and IDs machine-checkable for a future native implementation.
+
+
+// Spectrum display: analytic resonant band-pass response curves, drawn at currently tracked center frequencies.
+const canv=$('spectrum'),pen=canv.getContext('2d');let dpr=1,lastTime=0;
+function draw(t){requestAnimationFrame(draw);if(t-lastTime<32)return;lastTime=t;animateVCF();const rect=canv.getBoundingClientRect();if(!rect.width)return;const targetDpr=Math.min(window.devicePixelRatio||1,2),w=rect.width,h=rect.height;if(canv.width!==Math.round(w*targetDpr)||canv.height!==Math.round(h*targetDpr)){canv.width=Math.round(w*targetDpr);canv.height=Math.round(h*targetDpr)}pen.setTransform(targetDpr,0,0,targetDpr,0,0);pen.clearRect(0,0,w,h);
+ const l=26,r=w-10,top=13,bottom=h-23;const logMin=Math.log(50),logMax=Math.log(9000),xOf=f=>l+(Math.log(f)-logMin)/(logMax-logMin)*(r-l);pen.font='10px ui-monospace,Menlo,monospace';pen.textBaseline='top';for(const f of [50,100,200,500,1000,2000,5000]){const x=xOf(f);pen.beginPath();pen.moveTo(x,top);pen.lineTo(x,bottom);pen.strokeStyle='#b5c5ba';pen.lineWidth=.8;pen.stroke();pen.textAlign='center';pen.fillStyle='#4f655a';pen.fillText(f>=1000?f/1000+'k':''+f,x,h-15)}for(let i=0;i<=3;i++){const y=top+(bottom-top)*i/3;pen.beginPath();pen.moveTo(l,y);pen.lineTo(r,y);pen.strokeStyle='#bbcbc0';pen.stroke()}
+ const state=workletEnabled?workletState:engine;const val=state?state.level??state.lastLevel:0;const m=Math.pow(clamp(val,0,1),RECOVERY_MODES[p.recoveryMode].shape),lower=state?(state.lowHz??state.lastLow):p.lowBase*Math.pow(2,m*p.sweep),higher=state?(state.highHz??state.lastHigh):p.highBase*Math.pow(2,m*p.sweep);
+ function curve(fc,color){pen.beginPath();for(let i=0;i<=200;i++){const xx=l+(r-l)*i/200;const ff=Math.exp(logMin+(logMax-logMin)*i/200),ratio=ff/fc,amp=1/Math.sqrt(1+Math.pow(p.filterQ*(ratio-1/ratio),2));const yy=bottom-amp*(bottom-top-7);i===0?pen.moveTo(xx,yy):pen.lineTo(xx,yy)}pen.lineTo(r,bottom);pen.lineTo(l,bottom);pen.closePath();pen.fillStyle=color==='low'?'#b366382b':'#7560a92b';pen.fill();pen.beginPath();for(let i=0;i<=200;i++){const xx=l+(r-l)*i/200,ff=Math.exp(logMin+(logMax-logMin)*i/200),ratio=ff/fc,amp=1/Math.sqrt(1+Math.pow(p.filterQ*(ratio-1/ratio),2)),yy=bottom-amp*(bottom-top-7);i===0?pen.moveTo(xx,yy):pen.lineTo(xx,yy)}pen.lineWidth=2;pen.strokeStyle=color==='low'?'#b36638':'#7560a9';pen.stroke();}
+ curve(lower,'low');curve(higher,'high');$('lowRead').textContent=niceHz(lower);$('highRead').textContent=niceHz(higher);$('envRead').textContent=Math.round(val*100)+'%';$('envMeter').style.width=Math.round(val*100)+'%';}
+const smallScreen=window.matchMedia('(max-width:700px)');let activeMobileTab='osc';
+function showMobileTab(tab){
+ activeMobileTab=tab;
+ document.querySelectorAll('[data-tab-panel]').forEach(el=>el.classList.toggle('mobile-hidden',smallScreen.matches&&el.dataset.tabPanel!==tab));
+ document.querySelectorAll('.mobile-tab').forEach(el=>{const active=el.dataset.tab===tab;el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active))});
+ if(smallScreen.matches)window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('.mobile-tab').forEach(el=>el.addEventListener('click',()=>showMobileTab(el.dataset.tab)));
+ smallScreen.addEventListener?.('change',()=>showMobileTab(activeMobileTab));
+ showMobileTab('osc');
+ requestAnimationFrame(draw);displayControls();
+})();
+</script>
+</body>
+</html>
